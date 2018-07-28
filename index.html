@@ -5,17 +5,186 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" type="text/css" href="style.css">
-	<title>Client's SPA</title>
-</head>
-<body>
-
+	<!-- Custom CSS -->
+	<link rel="stylesheet" type="text/css" href="style.css">
 
 	<!-- Vue.js -->
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+	<title>User's SPA</title>
+</head>
+<body>
+
+	<div id="app">
+
+		<!-- Long black header -->
+		<nav class="navbar navbar-inverse">
+			<div class="container-fluid header">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">BSA-2018-php-15</a>
+				</div>
+				<div class="navbar-add-button">
+					<button class="btn navbar-btn" data-toggle="modal" data-target="#addUserModal">Add new user?..</button>
+				</div>
+			</div>
+		</nav>
+
+		<!-- Add user modal window -->
+		<div id="addUserModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Adding new user</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal">
+							<div class="form-group">
+								<label class="control-label col-sm-2" for="name">Name:</label>
+								<div class="col-sm-10">
+									<input type="name" class="form-control" id="name" placeholder="Enter name" name="name" v-model="newUser.name" autocomplete="off">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-sm-2" for="email">Email:</label>
+								<div class="col-sm-10">
+									<input type="email" class="form-control" id="email" placeholder="Enter email" name="email" v-model="newUser.email" autocomplete="off">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-sm-2" for="photo">Photo:</label>
+								<div class="col-sm-10">
+									<input type="photo" class="form-control" id="photo" placeholder="Enter photo" name="email" v-model="newUser.photo" autocomplete="off">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button @click="addUser" type="button" class="btn btn-primary" data-dismiss="modal">Add user</button>
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Edit user modal window -->
+		<div id="editUserModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Editing user id: {{ ediUser.id }}</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal">
+							<div class="form-group">
+								<label class="control-label col-sm-2" for="name">Name:</label>
+								<div class="col-sm-10">
+									<input type="name" class="form-control" id="name" name="name" v-model="ediUser.name" autocomplete="off">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-sm-2" for="email">Email:</label>
+								<div class="col-sm-10">
+									<input type="email" class="form-control" id="email" name="email" v-model="ediUser.email" autocomplete="off">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-sm-2" for="photo">Photo:</label>
+								<div class="col-sm-10">
+									<input type="photo" class="form-control" id="photo" name="email" v-model="ediUser.photo" autocomplete="off">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button @click="updateUser(ediUser.id);" type="button" class="btn btn-primary" data-dismiss="modal">Edit user</button>
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="container">
+
+			<!-- Header -->
+			<div class="row">
+				<div class="col-sm-12">
+					<h2 class="page-header">Users: {{ userCounter }}</h2>
+				</div>
+			</div>
+
+			<!-- Search panel -->
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="panel panel-default">
+						<div class="panel-heading"><strong>Find user by name or email:</strong></div>
+						<div class="panel-body">
+							<form class="form-inline" @submit.prevent="showSearchResult = true">
+								<input v-model="searchForm.query" type="text" class="form-control" placeholder="Search" autocomplete="off">
+								<label class="radio-inline"><input v-model="searchForm.byName" :value="true" type="radio" name="optradio" checked>Name</label>
+								<label class="radio-inline"><input v-model="searchForm.byName" :value="false" type="radio" name="optradio">Email</label>
+								<button type="submit" class="btn btn-primary btn-lg">Search</button>
+							</form>
+						</div>
+						<div v-if="showSearchResult" class="search-result">
+							<div v-if="searchUser()" v-bind="curUser" class="panel panel-success finded">
+								<img v-bind:src="showPhoto(curUser)">
+								<h4 class="media-heading">ID: {{ curUser.id }} </h4>
+								<h4 class="media-heading">Name: {{ curUser.name }}</h4>
+								<h4 class="media-heading">Email: {{ curUser.email }}</h4>
+								<div class="finded-btn-container">
+									<button @click="editUser(curUser.id); closeSearchResult();" class="btn btn-warning" data-toggle="modal" data-target="#editUserModal">Edit</button>
+									<button @click="deleteUser(curUser.id); closeSearchResult()" class="btn btn-danger">Delete</button>
+									<button @click="closeSearchResult()" class="btn btn-primary">Close</button>
+								</div>
+							</div>
+							<div v-else class="alert alert-danger">
+								<a v-on:click="closeSearchResult()" href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+								<strong>User '{{ searchForm.query }}' didn't find!</strong>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Users panel -->
+			<div v-if="!showSearchResult" class="row">
+				<template v-for="(user, id) in users">
+					<div class="col-sm-6">
+						<div class="panel panel-default">
+							<div class="media">
+								<div class="media-left media-middle">
+									<img v-bind:src="showPhoto(user)" class="media-object">
+								</div>
+								<div class="media-body">
+									<h4 class="media-heading">ID: {{ id }}</h4>
+									<h3 class="media-heading">{{ user.name }}</h3>
+									<h4 class="media-heading">{{ user.email }}</h4>
+									<button @click="editUser(id)" class="btn btn-warning" data-toggle="modal" data-target="#editUserModal">Edit</button>
+									<button @click="deleteUser(id)" class="btn btn-danger">Delete</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</template>
+			</div>
+		</div>
+
+</div>
+
+	<script src="style.js"></script>
 </body>
 </html>

@@ -1,0 +1,63 @@
+
+/* Headers */
+.header {
+	display: flex;
+	justify-content: center;
+}
+
+.page-header {
+	text-align: center;
+}
+
+/* Search form */
+.form-inline {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.form-inline > input[type=text] {
+	width: 50%;
+}
+
+/* Users cards */
+.media {
+	padding: 15px;
+}
+
+.media-left > img {
+	width: 150px;
+	height: 150px;
+}
+
+.media-body > .media-heading {
+	margin: 5px 0 5px 0;
+}
+
+.media-body > button {
+	margin: 20px 10px 0 0;
+}
+
+/* Search panel */
+.search-result {
+	padding: 15px;
+}
+
+.finded {
+	padding: 15px;
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.finded > img {
+	width: 70px;
+	height: 70px;
+}
+
+.finded > .finded-btn-container {
+	width: 20%;
+	display: flex;
+	justify-content: space-between;
+}
